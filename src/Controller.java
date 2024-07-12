@@ -1,14 +1,12 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class Controller extends JFrame implements MouseListener {
+public class Controller extends JFrame {
 	private JPanel pane; // contentPane
 	TimeLimitBar timeLimitBar; // 時間制限バー
 	Model model; // データ保持変数
@@ -33,6 +31,7 @@ public class Controller extends JFrame implements MouseListener {
 		SwingUtilities.invokeLater(() -> {
 			Controller controller = new Controller();
 			controller.setSize(500, 535);
+			controller.setResizable(false);
 			controller.setVisible(true);
 			// controller.setDimension();
 		});
@@ -51,7 +50,7 @@ public class Controller extends JFrame implements MouseListener {
 		pane.add(timeLimitBar, BorderLayout.NORTH);
 
 		// テスト
-		timeLimitBar.start();
+		// timeLimitBar.start();
 
 		// ボードの追加
 		initializeView();
@@ -73,36 +72,6 @@ public class Controller extends JFrame implements MouseListener {
 		board.setSize(dim);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseClicked'");
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
-	}
-
 	public JPanel getPane() {
 		return pane;
 	}
@@ -115,5 +84,11 @@ public class Controller extends JFrame implements MouseListener {
 
 	public Dimension getDim() {
 		return dim;
+	}
+
+	public void printXY(int x, int y) {
+		SwingUtilities.invokeLater(() -> {
+			System.out.println("X:" + x + ", Y:" + y);
+		});
 	}
 }
