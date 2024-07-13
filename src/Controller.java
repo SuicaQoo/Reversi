@@ -8,14 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-<<<<<<< HEAD
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Controller extends JFrame implements MouseListener{
-=======
-public class Controller extends JFrame implements MouseListener {
->>>>>>> 54b304d3e1123d8b55a13996cf52555b88bfec40
 	private JPanel pane; // contentPane
 	TimeLimitBar timeLimitBar; // 時間制限バー
 	Model model; // データ保持変数
@@ -106,7 +102,6 @@ public class Controller extends JFrame implements MouseListener {
 			System.out.println("X:" + x + ", Y:" + y);
 		});
 	}
-<<<<<<< HEAD
 	
 	@Override
     public void mouseClicked(MouseEvent e) {
@@ -138,37 +133,4 @@ public class Controller extends JFrame implements MouseListener {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
     }
-=======
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		int x = e.getX();
-		int y = e.getY();
-		printXY(x, y);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
-	}
->>>>>>> 54b304d3e1123d8b55a13996cf52555b88bfec40
 }

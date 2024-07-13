@@ -5,13 +5,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-<<<<<<< HEAD
 public class View extends JPanel {
     private Controller controller; // 非静的フィールドに変更
-=======
-public class View extends JPanel {
-    private Controller controller;
->>>>>>> 54b304d3e1123d8b55a13996cf52555b88bfec40
 
     private static final int BOARD_SIZE = 8; // 縦横何マスか
     private static final int SQUARE_SIZE = 58; // マス目のサイズ
@@ -46,8 +41,5 @@ public class View extends JPanel {
         }
     }
 
-<<<<<<< HEAD
     
-=======
->>>>>>> 54b304d3e1123d8b55a13996cf52555b88bfec40
 }
