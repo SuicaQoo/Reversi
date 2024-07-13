@@ -1,13 +1,11 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public class View extends JPanel implements MouseListener {
-    private Controller controller; // 非静的フィールドに変更
+public class View extends JPanel {
+    private Controller controller;
 
     private static final int BOARD_SIZE = 8; // 縦横何マスか
     private static final int SQUARE_SIZE = 58; // マス目のサイズ
@@ -42,34 +40,4 @@ public class View extends JPanel implements MouseListener {
         }
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        controller.printXY(x, y);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
-    }
 }
