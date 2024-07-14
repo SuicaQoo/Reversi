@@ -6,17 +6,12 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-
 import javax.swing.JPanel;
 
 public class View extends JPanel {
-<<<<<<< HEAD
     private ObjectOutputStream out;
     // private Controller controller; // 非静的フィールドに変更
     private Model model;
-=======
-    private Controller controller; // 非静的フィールドに変更
->>>>>>> 110ebc744e396a07fa71ba8250264fb46e45aa6c
 
     private static final int BOARD_SIZE = 8; // 縦横何マスか
     private static final int SQUARE_SIZE = 60; // マス目のサイズ
@@ -71,7 +66,6 @@ public class View extends JPanel {
         }
     }
 
-<<<<<<< HEAD
     private void drawPiece(Graphics2D g2d) {
         int[][] board = model.getBoard();
         for (int i = 0; i < 8; i++) {
@@ -116,7 +110,4 @@ public class View extends JPanel {
     public void setModel(Model model) {
         this.model = model;
     }
-=======
-    
->>>>>>> 110ebc744e396a07fa71ba8250264fb46e45aa6c
 }
