@@ -20,6 +20,8 @@ public class Client {
     private static ObjectOutputStream out = null;
     private static ObjectInputStream in = null;
 
+    private static int myColor;
+
     private static final int BLACK = 1;
     private static final int WHITE = 2;
 
@@ -28,7 +30,6 @@ public class Client {
         int port = 12345;
         Object obj = null;
         String response = "";
-        int myColor;
         int nowTurn;
 
         try (Socket socket = new Socket(serverAddress, port);) {
@@ -62,19 +63,23 @@ public class Client {
                 }
             }
 
+            // 自分の駒の色をViewに持たせる
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    boardPanel.setColor(myColor);
+                }
+            });
+
             while (true) {
 
                 try {
+                    SwingUtilities.invokeLater(() -> repaint());
                     obj = in.readObject(); // モデルを受信
-                    if (obj instanceof String) {
-                        String message = (String) obj;
-                        if (message.equals("repaint")) {
-                            SwingUtilities.invokeLater(() -> repaint());
-                        }
-                    } else if (obj instanceof Model) {
+                    if (obj instanceof Model) {
                         model = (Model) obj;
                         SwingUtilities.invokeLater(() -> {
-                            boardPanel.setModel(model); // モデルをViewにセット
+                            boardPanel.setModel(model);
+                            boardPanel.repaint(); // UIスレッドで再描画
                         });
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -114,6 +119,7 @@ public class Client {
 
                 boardPanel = new View(model, out); // View クラスを利用した表示パネルの初期化
                 pane.add(boardPanel, BorderLayout.CENTER);
+                boardPanel.setModel(model);
 
                 frame.setVisible(true); // モデルを受信した後にフレームを表示
             }

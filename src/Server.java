@@ -22,12 +22,19 @@ public class Server {
         try {
             serverSocket = new ServerSocket(12345);
             System.out.println("Server started on port 12345");
-
-            while (true) {
+            boolean finish = false;
+            while (!finish) {
                 Socket clientSocket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
+                if (checkFinish()) {
+                    finish = true;
+                } else {
+                    if (checkPass(model.getTurn())) {
+                        model.switchTurn();
+                    }
+                }
             }
 
         } catch (IOException e) {
@@ -251,7 +258,7 @@ public class Server {
     public static void changePiece(int index_x, int index_y) {
         int next;
         int now = model.getBoard(index_x, index_y);
-        System.out.println("x = " + index_x + "y = " + index_y);
+        System.out.println("index_x = " + index_x + ", index_y = " + index_y);
         // 右方向の探索(ok)
         if (index_x < 6) {
             next = model.getBoard(index_x + 1, index_y);
@@ -269,6 +276,7 @@ public class Server {
                                 model.setBoard(index_x + k, index_y, BLACK);
                             }
                         }
+                        model.notifyObservers();
                         break;
                     }
                 }
@@ -452,6 +460,60 @@ public class Server {
         }
     }
 
+    public static boolean checkFinish() {
+        boolean isFinish = true;
+        boolean[][] blackPositionable = model.getBlackPositionable();
+        boolean[][] whitePositionable = model.getWhitePositionable();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (blackPositionable[i][j] == true) {
+                    isFinish = false;
+                    break;
+                } else if (whitePositionable[i][j] == true) {
+                    isFinish = false;
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        }
+        if (isFinish == true) {
+            System.out.println("ゲームは終了されました");
+        }
+        return isFinish;
+    }
+
+    private static boolean checkPass(int nowTurn) {
+        boolean isPass = true;
+        if (nowTurn == BLACK) {
+            boolean[][] blackPositionable = model.getBlackPositionable();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (blackPositionable[i][j] == true) {
+                        isPass = false;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        } else {
+            boolean[][] whitePositionable = model.getWhitePositionable();
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (whitePositionable[i][j] == true) {
+                        isPass = false;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+        if (isPass == true) {
+            System.out.println(nowTurn + "はパスされました");
+        }
+        return isPass;
+    }
+
     private static class ClientHandler implements Runnable {
         private Socket socket;
         private ObjectOutputStream out;
@@ -493,7 +555,7 @@ public class Server {
                         if (receivedObject instanceof String) {
                             input = (String) receivedObject;
                             System.out.println("got a code");
-                            System.out.println(input);
+                            System.out.println("input:" + input);
                             if (input.matches(regex)) {
                                 String coo[] = input.split(",");
                                 int x = Integer.parseInt(coo[0]);
@@ -504,23 +566,22 @@ public class Server {
                                     if (model.getTurn() == BLACK
                                             && model.getBlackPositionable(index_X, index_Y) == true) {
                                         model.setBoard(index_X, index_Y, BLACK);
-                                        model.setTurn(WHITE);
+                                        model.switchTurn();
                                     } else if (model.getTurn() == WHITE
                                             && model.getWhitePositionable(index_X, index_Y) == true) {
                                         model.setBoard(index_X, index_Y, WHITE);
-                                        model.setTurn(BLACK);
+                                        model.switchTurn();
                                     } else {
                                         System.out.println("そこには置けません(mouseClicked())");
                                     }
                                     changePiece(index_X, index_Y);
                                     calcPositionable();
-                                    String code = "repaint";
-                                    System.out.println(code);
-                                    out.writeObject(code);
                                 }
                             } else if (input.equals("getModel")) {
                                 out.writeObject(model);
                                 System.out.println("send a model");
+                            } else if (input.equals("checkFinish")) {
+                                // TODO
                             }
                         }
                     }

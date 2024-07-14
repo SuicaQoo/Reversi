@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-public class View extends JPanel {
+public class View extends JPanel implements Observer {
     private ObjectOutputStream out;
     // private Controller controller; // 非静的フィールドに変更
     private Model model;
+    private int myColor;
 
     private static final int BOARD_SIZE = 8; // 縦横何マスか
     private static final int SQUARE_SIZE = 60; // マス目のサイズ
@@ -24,35 +26,46 @@ public class View extends JPanel {
         setBackground(Color.GREEN); // 背景色を緑に設定
         this.model = model;
         this.out = out;
+        model.addObserver(this);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                try {
-                    int x = e.getX();
-                    int y = e.getY();
-                    out.writeObject(x + "," + y);
-                    // SwingUtilities.invokeLater(() -> repaint());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                if (myColor == model.getTurn()) {
+                    try {
+                        int x = e.getX();
+                        int y = e.getY();
+                        out.writeObject(x + "," + y);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    SwingUtilities.invokeLater(() -> repaint());
                 }
+                SwingUtilities.invokeLater(() -> repaint());
             }
         });
 
     }
 
     @Override
+    public void update(Model model) {
+        System.out.println("View updated"); // デバッグ情報の出力
+        this.model = model; // Modelの参照を更新
+        SwingUtilities.invokeLater(() -> {
+            invalidate();
+            validate();
+            repaint();
+        });
+    }
+
+    @Override
     protected void paintComponent(Graphics g) {
+
+        System.out.println("Repainting view"); // デバッグ情報の出力
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g;
-
         drawBoard(g2d);
         drawPiece(g2d);
         drawPositionable(g2d);
-    }
-
-    public void updateBoard() {
-        paintComponent(getGraphics());
     }
 
     private void drawBoard(Graphics2D g2d) {
@@ -68,9 +81,11 @@ public class View extends JPanel {
 
     private void drawPiece(Graphics2D g2d) {
         int[][] board = model.getBoard();
+        System.out.println("Drawing pieces for model: " + model); // デバッグ情報の出力
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != 0) {
+                    System.out.println("Drawing piece at: " + i + ", " + j); // デバッグ情報の出力
                     if (board[i][j] == 1) {
                         // 黒円
                         Color color = new Color(0, 0, 0);
@@ -109,5 +124,15 @@ public class View extends JPanel {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public void setColor(int clientColor) {
+        this.myColor = clientColor;
+    }
+
+    public void forceRepaint() {
+        SwingUtilities.invokeLater(() -> {
+            repaint();
+        });
     }
 }

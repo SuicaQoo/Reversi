@@ -1,5 +1,7 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Model implements Serializable {
     private int[][] board; // ボード上の駒情報を管理(０：駒なし、１：黒、２：白)
@@ -8,6 +10,7 @@ public class Model implements Serializable {
     private double timelimit; // 制限時間を管理
     private int countWhite; // 白駒の数を管理
     private int countBlack; // 黒駒の数を管理
+    private List<Observer> observers = new ArrayList<>();
 
     private static final int BLACK = 1;
     private static final int WHITE = 2;
@@ -87,31 +90,37 @@ public class Model implements Serializable {
     // ボード全体の情報を変更
     public void setBoard(int[][] board) {
         this.board = board;
+        notifyObservers();
     }
 
     // ボードの情報を場所を指定して変更
     public void setBoard(int line, int row, int info) {
         board[line][row] = info;
+        notifyObservers(); // 石を置いたり石を取り除いた後の通知
     }
 
     // 白駒が置ける場所の情報を変更
     public void setWhitePositionable(boolean[][] whitePositionable) {
         this.whitePositionable = whitePositionable;
+        notifyObservers();
     }
 
     // 白駒の置けるかを場所を指定して変更
     public void setWhitePositionable(int line, int row, boolean info) {
         whitePositionable[line][row] = info;
+        notifyObservers();
     }
 
     // 黒駒が置ける場所の情報を変更
     public void setBlackPositionable(boolean[][] blackPositionable) {
         this.blackPositionable = blackPositionable;
+        notifyObservers();
     }
 
     // 黒駒の置けるかを場所を指定して変更
     public void setBlackPositionable(int line, int row, boolean info) {
         blackPositionable[line][row] = info;
+        notifyObservers();
     }
 
     // 白駒の数を変更
@@ -127,10 +136,29 @@ public class Model implements Serializable {
     // 制限時間を変更
     public void setTimeLimit(double timelimit) {
         this.timelimit = timelimit;
+        notifyObservers();
     }
 
-    // turnの更新
-    public void setTurn(int color) {
-        this.turn = color;
+    public void switchTurn() {
+        // ターンの切り替えロジック
+        turn = (turn == BLACK) ? WHITE : BLACK;
+        // 変更があったことを全てのObserverに通知
+        notifyObservers();
+    }
+
+    // Observerの登録
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    // Observerに通知
+    protected void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(this);
+        }
+    }
+
+    public void forceNotify() {
+        notifyObservers();
     }
 }
