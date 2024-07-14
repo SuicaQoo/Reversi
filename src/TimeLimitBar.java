@@ -8,38 +8,22 @@ public class TimeLimitBar extends JProgressBar {
     private Timer timer;
     private int timeAllowed;
     private boolean isTimeLimit;
-    private boolean isMyTurn;
+
+    private static final int BLACK = 1;
+    private static final int WHITE = 2;
 
     TimeLimitBar() {
         super(0, 100);
         setTimeAllowed(100);
         isTimeLimit = false;
-        isMyTurn = true;
     }
-    
+
     private void setTimeAllowed(int time) {
         timeAllowed = time;
     }
+
     public boolean checkTimeLimit() {
         return this.isTimeLimit;
-    }
-
-    public void Update() {
-        
-        if (timer == null) {
-            timer = new Timer(100, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    timeAllowed--;
-                    setValue(timeAllowed);
-                    if (timeAllowed < 0) {
-                        changeTurn();
-                        reset();
-                    }
-                }
-            });
-        }
-        timer.start();
     }
 
     public void reset() {
@@ -48,29 +32,36 @@ public class TimeLimitBar extends JProgressBar {
         timeAllowed = 100;
         isTimeLimit = true;
     }
-    
+
     // 自分のターンかつタイマーが動いていないとき反応する。
     // プログレスバーの開始ボタン。Update関数を動かす
-    public void start() {
-        if (isMyTurn == true) {
-            Update();
+    public void start(int playerColor) {
+        if (playerColor == BLACK) {
+            setString("黒のターン");
+        } else if (playerColor == WHITE) {
+            setString("白のターン");
         }
+        if (timer == null) {
+
+            timer = new Timer(100, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    timeAllowed--;
+                    setValue(timeAllowed);
+                    if (timeAllowed < 0) {
+                        reset();
+                    }
+                }
+            });
+        }
+        timer.start();
     }
-    
+
     // 置く場所選ぶと制限時間切れ待たずに、相手ターンにする。
     // 自分のターンかつタイマーが動いているときに限り反応する。
     public void select() {
-        if (timer != null && isMyTurn == true) {
+        if (timer != null) {
             reset();
-            changeTurn();
         }
-    }
-    
-    private void changeTurn() {
-        isMyTurn = !isMyTurn;
-    }
-    
-    public void showMyTurn() {
-        System.out.println("MyTurn:" + isMyTurn);
     }
 }

@@ -1,4 +1,7 @@
-public class Model{
+import java.io.Serializable;
+import java.util.Arrays;
+
+public class Model implements Serializable {
     private int[][] board; // ボード上の駒情報を管理(０：駒なし、１：黒、２：白)
     private boolean[][] whitePositionable; // 白い駒が置ける場所を管理
     private boolean[][] blackPositionable; // 黒い駒が置ける場所を管理
@@ -6,97 +9,128 @@ public class Model{
     private int countWhite; // 白駒の数を管理
     private int countBlack; // 黒駒の数を管理
 
+    private static final int BLACK = 1;
+    private static final int WHITE = 2;
+
+    private int turn;
+
+    public Model() {
+        board = new int[8][8];
+        whitePositionable = new boolean[8][8];
+        blackPositionable = new boolean[8][8];
+        // ボードの駒情報の初期化 すべて０にして駒がない状況に
+        for (int i = 0; i < board.length; i++) {
+            Arrays.fill(board[i], 0);
+            Arrays.fill(whitePositionable[i], false);
+            Arrays.fill(blackPositionable[i], false);
+        }
+        turn = BLACK;
+        // 初期配置
+        board[3][3] = WHITE;
+        board[4][4] = WHITE;
+        board[3][4] = BLACK;
+        board[4][3] = BLACK;
+    }
 
     /* getter */
     // ボード全体の情報を取得
-    public int[][] getBoard(){
+    public int[][] getBoard() {
         return board;
     }
 
     // ボードの情報を場所を指定して取得
-    public int getBoard(int line, int row){
+    public int getBoard(int line, int row) {
         return board[line][row];
     }
 
     // 白駒が置ける場所の情報を取得
-    public boolean[][] getWhitePositionable(){
+    public boolean[][] getWhitePositionable() {
         return whitePositionable;
     }
 
     // 白駒の置けるかを場所を指定して取得
-    public boolean getWhitePositionable(int line, int row){
+    public boolean getWhitePositionable(int line, int row) {
         return whitePositionable[line][row];
     }
 
     // 黒駒が置ける場所の情報を取得
-    public boolean[][] getBlackPositionable(){
+    public boolean[][] getBlackPositionable() {
         return blackPositionable;
     }
 
     // 黒駒の置けるかを場所を指定して取得
-    public boolean getBlackPositionable(int line, int row){
+    public boolean getBlackPositionable(int line, int row) {
         return blackPositionable[line][row];
     }
 
     // 白駒の数を取得
-    public int getCountWhite(){
+    public int getCountWhite() {
         return countWhite;
     }
 
     // 黒駒の数を取得
-    public int getCountBlack(){
+    public int getCountBlack() {
         return countBlack;
     }
 
     // 制限時間を取得
-    public double getTimeLimit(){
+    public double getTimeLimit() {
         return timelimit;
     }
 
+    // turnの取得
+    public int getTurn() {
+        return turn;
+    }
 
     /* setter */
     // ボード全体の情報を変更
-    public void setBoard(int[][] board){
+    public void setBoard(int[][] board) {
         this.board = board;
     }
 
     // ボードの情報を場所を指定して変更
-    public void setBoard(int line, int row, int info){
+    public void setBoard(int line, int row, int info) {
         board[line][row] = info;
     }
 
     // 白駒が置ける場所の情報を変更
-    public void setWhitePositionable(boolean[][] whitePositionable){
+    public void setWhitePositionable(boolean[][] whitePositionable) {
         this.whitePositionable = whitePositionable;
     }
 
     // 白駒の置けるかを場所を指定して変更
-    public void setWhitePositionable(int line, int row, boolean info){
+    public void setWhitePositionable(int line, int row, boolean info) {
         whitePositionable[line][row] = info;
     }
 
     // 黒駒が置ける場所の情報を変更
-    public void setBlackPositionable(boolean[][] blackPositionable){
+    public void setBlackPositionable(boolean[][] blackPositionable) {
         this.blackPositionable = blackPositionable;
     }
 
     // 黒駒の置けるかを場所を指定して変更
-    public void setBlackPositionable(int line, int row, boolean info){
+    public void setBlackPositionable(int line, int row, boolean info) {
         blackPositionable[line][row] = info;
     }
 
     // 白駒の数を変更
-    public void setCountWhite(int count){
+    public void setCountWhite(int count) {
         countWhite = count;
     }
 
     // 黒駒の数を変更
-    public void setCountBlack(int count){
+    public void setCountBlack(int count) {
         countBlack = count;
     }
 
     // 制限時間を変更
-    public void setTimeLimit(double timelimit){
+    public void setTimeLimit(double timelimit) {
         this.timelimit = timelimit;
+    }
+
+    // turnの更新
+    public void setTurn(int color) {
+        this.turn = color;
     }
 }
