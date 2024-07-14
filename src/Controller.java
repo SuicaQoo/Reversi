@@ -8,6 +8,7 @@
 // import javax.swing.JPanel;
 // import javax.swing.SwingUtilities;
 
+<<<<<<< HEAD
 // public class Controller extends JFrame implements MouseListener {
 // private JPanel pane; // contentPane
 // TimeLimitBar timeLimitBar; // 時間制限バー
@@ -16,6 +17,17 @@
 // Player player_b; // 黒色のプレイヤー
 // Player player_w; // 白色のプレイヤー
 // Dimension dim;
+=======
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class Controller extends JFrame implements MouseListener{
+	private JPanel pane; // contentPane
+	TimeLimitBar timeLimitBar; // 時間制限バー
+	Model model; // データ保持変数
+	View board; // 描画変数
+	Dimension dim;
+>>>>>>> 110ebc744e396a07fa71ba8250264fb46e45aa6c
 
 // // 一時的にプレイヤー変数
 // boolean nowPlayer = true; // true: black false: white
@@ -99,6 +111,7 @@
 // return pane;
 // }
 
+<<<<<<< HEAD
 // public void setDimension() {
 // dim = getContentPane().getSize();
 // System.out.println("width = " + dim.getWidth() + " height = " +
@@ -643,3 +656,42 @@
 // }
 // }
 // }
+=======
+	public void printXY(int x, int y) {
+		SwingUtilities.invokeLater(() -> {
+			System.out.println("X:" + x + ", Y:" + y);
+		});
+	}
+	
+	@Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        controller.printXY(x, y);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mousePressed'");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mouseReleased'");
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mouseEntered'");
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mouseExited'");
+    }
+}
+>>>>>>> 110ebc744e396a07fa71ba8250264fb46e45aa6c
