@@ -15,11 +15,9 @@ public class Client {
     private static JFrame frame;
     private static JPanel pane;
     private static View boardPanel;
-    private static TimeLimitBar timeLimitBar; // 時間制限バー
     private static Model model = null;
     private static ObjectOutputStream out = null;
     private static ObjectInputStream in = null;
-
     private static int myColor;
 
     private static final int BLACK = 1;
@@ -30,7 +28,6 @@ public class Client {
         int port = 12345;
         Object obj = null;
         String response = "";
-        int nowTurn;
 
         try (Socket socket = new Socket(serverAddress, port);) {
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -43,10 +40,8 @@ public class Client {
             obj = in.readObject();
             if (obj instanceof Model) {
                 model = (Model) obj;
-                System.out.println("got model");
+                System.out.println("got a model");
             }
-
-            initializeGUI();
 
             obj = in.readObject();
             if (obj instanceof String) {
@@ -57,35 +52,13 @@ public class Client {
                     } else {
                         myColor = WHITE;
                     }
-                    nowTurn = Integer.parseInt(response.split(" ")[2]);
                     System.out.println(myColor);
-                    System.out.println(nowTurn);
                 }
             }
 
-            // 自分の駒の色をViewに持たせる
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    boardPanel.setColor(myColor);
-                }
-            });
+            initializeGUI();
 
             while (true) {
-
-                try {
-                    SwingUtilities.invokeLater(() -> repaint());
-                    obj = in.readObject(); // モデルを受信
-                    if (obj instanceof Model) {
-                        model = (Model) obj;
-                        SwingUtilities.invokeLater(() -> {
-                            boardPanel.setModel(model);
-                            boardPanel.repaint(); // UIスレッドで再描画
-                        });
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
             }
 
         } catch (IOException e) {
@@ -105,29 +78,25 @@ public class Client {
     private static void initializeGUI() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                frame = new JFrame("Client");
+                if (myColor == BLACK) {
+                    frame = new JFrame("BLACK");
+                } else {
+                    frame = new JFrame("WHITE");
+                }
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(520, 550);
+                frame.setSize(520, 540);
                 frame.setResizable(false);
 
                 pane = new JPanel(new BorderLayout());
                 pane.setBackground(Color.WHITE);
                 frame.add(pane);
 
-                timeLimitBar = new TimeLimitBar(); // 時間制限バーの初期化
-                pane.add(timeLimitBar, BorderLayout.NORTH);
-
-                boardPanel = new View(model, out); // View クラスを利用した表示パネルの初期化
+                boardPanel = new View(model, out, in, myColor); // View クラスを利用した表示パネルの初期化
                 pane.add(boardPanel, BorderLayout.CENTER);
-                boardPanel.setModel(model);
 
                 frame.setVisible(true); // モデルを受信した後にフレームを表示
             }
         });
 
-    }
-
-    private static void repaint() {
-        boardPanel.repaint();
     }
 }

@@ -1,38 +1,38 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Model implements Serializable {
     private int[][] board; // ボード上の駒情報を管理(０：駒なし、１：黒、２：白)
-    private boolean[][] whitePositionable; // 白い駒が置ける場所を管理
     private boolean[][] blackPositionable; // 黒い駒が置ける場所を管理
-    private double timelimit; // 制限時間を管理
-    private int countWhite; // 白駒の数を管理
+    private boolean[][] whitePositionable; // 白い駒が置ける場所を管理
     private int countBlack; // 黒駒の数を管理
-    private List<Observer> observers = new ArrayList<>();
+    private int countWhite; // 白駒の数を管理
 
+    private static final int EMPTY = 0;
     private static final int BLACK = 1;
     private static final int WHITE = 2;
 
-    private int turn;
+    private boolean turnIsBlack;
 
     public Model() {
         board = new int[8][8];
-        whitePositionable = new boolean[8][8];
         blackPositionable = new boolean[8][8];
+        whitePositionable = new boolean[8][8];
         // ボードの駒情報の初期化 すべて０にして駒がない状況に
         for (int i = 0; i < board.length; i++) {
-            Arrays.fill(board[i], 0);
-            Arrays.fill(whitePositionable[i], false);
+            Arrays.fill(board[i], EMPTY);
             Arrays.fill(blackPositionable[i], false);
+            Arrays.fill(whitePositionable[i], false);
         }
-        turn = BLACK;
+        boolean startTurn = true; // 黒(true)からスタート
+        turnIsBlack = startTurn;
+
         // 初期配置
         board[3][3] = WHITE;
         board[4][4] = WHITE;
         board[3][4] = BLACK;
         board[4][3] = BLACK;
+
     }
 
     /* getter */
@@ -76,51 +76,41 @@ public class Model implements Serializable {
         return countBlack;
     }
 
-    // 制限時間を取得
-    public double getTimeLimit() {
-        return timelimit;
-    }
-
     // turnの取得
-    public int getTurn() {
-        return turn;
+    public boolean getTurn() {
+        return turnIsBlack;
     }
 
     /* setter */
     // ボード全体の情報を変更
     public void setBoard(int[][] board) {
         this.board = board;
-        notifyObservers();
+        System.out.println("board updated");
     }
 
     // ボードの情報を場所を指定して変更
     public void setBoard(int line, int row, int info) {
         board[line][row] = info;
-        notifyObservers(); // 石を置いたり石を取り除いた後の通知
     }
 
     // 白駒が置ける場所の情報を変更
     public void setWhitePositionable(boolean[][] whitePositionable) {
         this.whitePositionable = whitePositionable;
-        notifyObservers();
     }
 
     // 白駒の置けるかを場所を指定して変更
     public void setWhitePositionable(int line, int row, boolean info) {
         whitePositionable[line][row] = info;
-        notifyObservers();
     }
 
     // 黒駒が置ける場所の情報を変更
     public void setBlackPositionable(boolean[][] blackPositionable) {
         this.blackPositionable = blackPositionable;
-        notifyObservers();
     }
 
     // 黒駒の置けるかを場所を指定して変更
     public void setBlackPositionable(int line, int row, boolean info) {
         blackPositionable[line][row] = info;
-        notifyObservers();
     }
 
     // 白駒の数を変更
@@ -133,32 +123,8 @@ public class Model implements Serializable {
         countBlack = count;
     }
 
-    // 制限時間を変更
-    public void setTimeLimit(double timelimit) {
-        this.timelimit = timelimit;
-        notifyObservers();
-    }
-
-    public void switchTurn() {
-        // ターンの切り替えロジック
-        turn = (turn == BLACK) ? WHITE : BLACK;
-        // 変更があったことを全てのObserverに通知
-        notifyObservers();
-    }
-
-    // Observerの登録
-    public void addObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    // Observerに通知
-    protected void notifyObservers() {
-        for (Observer observer : observers) {
-            observer.update(this);
-        }
-    }
-
-    public void forceNotify() {
-        notifyObservers();
+    // turnの更新
+    public void setTurn(boolean turnIsBlack) {
+        this.turnIsBlack = turnIsBlack;
     }
 }
